@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Progress Bar</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        
+        button {
+            margin: 40px;
+        }
+        
+        .bar-container {
+            width: 200px;
+            height: 30px;
+            margin: 40px;
+            background-color: grey;
+        }
+        
+        .bar-progress {
+            background-color: green;
+            height: 100%;
+            width: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bar-container">
+        <div class="bar-progress"></div>
+    </div>
+
+    <button onclick="fillBarOne(2)">Start 1</button>
+
+    <button onclick="fillBarTwo(2)">Start 2</button>
+
+    <script>
+        function fillBarTwo(seconds) {
+
+            const barProgressEl = document.querySelector('.bar-progress');
+            let barPercentage = 0;
+            const interval = setInterval(() => {
+                barProgressEl.style.width = barPercentage + '%';
+                barPercentage++;
+                console.log('running at ' + barPercentage);
+                if (barPercentage >= 100) {
+                    clearInterval(interval);
+                }
+
+            }, (seconds * 1000) / 100);
+        }
+
+        function fillBarOne(seconds) {
+            const barProgressEl = document.querySelector('.bar-progress');
+            barProgressEl.style.transition = `${seconds}s linear width`;
+            barProgressEl.style.width = '100%';
+        }
+    </script>
+</body>
+
+</html>

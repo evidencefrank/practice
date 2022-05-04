@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Component</title>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+        
+        .faq-component {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .faq-container {
+            border-radius: 10px;
+            padding: 12px;
+            width: 40%;
+            margin: auto;
+        }
+        
+        .heading {
+            text-align: center;
+        }
+        
+        .faq-box {
+            margin: 10px 0;
+        }
+        
+        .faq-item {
+            border: 1px solid gray;
+            border-radius: 3px;
+            padding: 5px;
+            cursor: pointer;
+        }
+        
+        .faq-answer {
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="faq-component">
+        <div class="faq-container">
+            <h2 class="heading">Frequently asked questions</h2>
+
+            <div class="faq-area"></div>
+        </div>
+    </div>
+
+
+
+    <script>
+        const faqArea = document.querySelector(".faq-area");
+        const FAQ = [{
+            question: "How many bones does a cat have?",
+            answer: "A cat has 230 bones - 6 more than a human",
+        }, {
+            question: "How much do cats sleep?",
+            answer: "The average cat sleeps 12-16 hours per day",
+        }, {
+            question: "How long do cats live",
+            answer: "Outdoor cats live 5 years on average. Indoor\ncats live 15 years on average.",
+        }, ];
+
+        function makeFaqBoxes(questionArray) {
+            for (let faq of questionArray) {
+                const faqBox = document.createElement("div");
+                faqBox.classList.add('faq-box');
+                faqBox.innerHTML = `<details class="faq-item">
+            <summary>${faq.question}</summary>
+            <p class="faq-answer">
+                ${faq.answer}
+            </p>
+        </details>`;
+                faqArea.appendChild(faqBox);
+            }
+
+        }
+
+        makeFaqBoxes(FAQ);
+
+        let firstFaq = document.getElementsByClassName('faq-item').item(0);
+
+        firstFaq.open = true;
+    </script>
+</body>
+
+</html>

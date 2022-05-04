@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Data Fetch Visualisation</title>
+
+    <style>
+        .graph {
+            box-sizing: border-box;
+            width: 700px;
+            height: 500px;
+            border: 0px solid black;
+            border-left-width: 1px;
+            border-bottom-width: 1px;
+            padding-left: 15px;
+            padding-right: 15px;
+            margin: 100px auto 0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            position: relative;
+        }
+        
+        .column {
+            background-color: #aaa;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            flex: 1;
+            position: relative;
+        }
+        
+        .number-label {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translate(-50%, 120%);
+        }
+        
+        .y-label {
+            position: absolute;
+            left: 0;
+            transform: translate(-150%, 50%);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="graph">
+            <!-- <div class="column">
+                <div class="number-label">1</div>
+            </div>
+            <div class="column">
+                <div class="number-label">2</div>
+            </div> -->
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://www.random.org/integers/?num=200&min=1&max=10&col=1&base=10&format=plain&rnd=new";
+
+        (async() => {
+            const frequencyMap = {};
+            const req = await fetch(API_URL);
+            const res = await req.text();
+
+            const numbers = res.trim().split('\n').map(Number);
+
+            numbers.forEach((number) => {
+                if (frequencyMap[number]) {
+                    frequencyMap[number] += 1;
+                } else {
+                    frequencyMap[number] = 1;
+                }
+            });
+
+            console.log(frequencyMap);
+
+            const graphEl = document.querySelector(".graph");
+            const keys = Object.keys(frequencyMap);
+
+            const maxY = Math.max(...Object.values(frequencyMap));
+            const minX = Math.min(...keys);
+            const maxX = Math.max(...keys);
+
+            for (let x = minX; x <= maxX; x++) {
+                const freq = frequencyMap[x] || 0;
+                console.log(freq);
+                const heightPercentage = (freq / maxY) * 100;
+
+                const column = document.createElement('div');
+                column.classList.add('column');
+                column.style.height = `${heightPercentage}%`;
+
+                graphEl.appendChild(column);
+
+                const numberLabelEl = document.createElement('div');
+                numberLabelEl.className = 'number-label';
+                numberLabelEl.textContent = x;
+
+                column.appendChild(numberLabelEl);
+
+            }
+
+            for (let y = 0; y < maxY; y += 10) {
+                const yLabelEl = document.createElement('div');
+                yLabelEl.className = 'y-label';
+                yLabelEl.textContent = y;
+                const percentageBottom = (y / maxY) * 100;
+                yLabelEl.style.bottom = `${percentageBottom}%`;
+                graphEl.appendChild(yLabelEl);
+            }
+        })();
+    </script>
+</body>
+
+</html>
+
+<!-- 
+    1. How to keep track of how many times a number comes out -- done
+    2. Make a graph/chart (CSS) -- done
+    3. Vertically make sure the number of times a single number shows up is proportional to the height of a graph
+    4. how to output the x-labels
+ -->

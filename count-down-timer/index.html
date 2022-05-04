@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .input-field {
+            width: 40px;
+        }
+        /* .display-time {
+            display: inline-block;
+        } */
+        
+        .timer-row {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            height: 30px;
+        }
+        
+        .input-group {
+            height: 100%;
+        }
+        
+        input {
+            height: 100%;
+        }
+        
+        button {
+            display: inline-block;
+            height: 100%;
+            width: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Countdown Timer</h2>
+        <div class="timer-row">
+            <div id="input-group" class="input-group">
+                <input id="hours" type="number" min="0" max="23" step="1" value="00" placeholder="HH" class="input-field" onchange="leadingZeros(this)" onKeyUp=" leadingZeros(this)" onclick="leadingZeros(this)"> :
+                <input id="minutes" type="number" min="0" max="59" step="1" value="00" placeholder="MM" class="input-field" onchange="leadingZeros(this)" onKeyUp="leadingZeros(this)" onclick="leadingZeros(this)"> :
+                <input id="seconds" type="number" min="0" max="59" step="1" value="00" placeholder="SS" class="input-field" onchange="leadingZeros(this)" onKeyUp="leadingZeros(this)" onclick="leadingZeros(this)">
+            </div>
+
+
+            <div id="display-time" class="display-time hidden"></div>
+
+            <button id="start-button" type="button">Start</button>
+            <button id="pause-button" type="button" class="hidden">Pause</button>
+            <button id="reset-button" type="button" class="hidden">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        function leadingZeros(input) {
+            if (!isNaN(input.value) && input.value.length === 1) {
+                return input.value = '0' + input.value;
+            }
+        }
+
+        function getTimeText(remainingTime) {
+            const remainingHours = Math.floor(remainingTime / 3600);
+            const remainingMinutes = Math.floor((remainingTime % 3600) / 60);
+            const remainingSeconds = Math.floor((remainingTime % 3600) % 60);
+
+            return `<input class="input-field" disabled value="${String(remainingHours).padStart(2, "0")}"/> : <input class="input-field" disabled value="${String(
+    remainingMinutes).padStart(2, "0")}"/> : <input class="input-field" disabled value="${String(remainingSeconds).padStart(2, "0")}"/>
+  `;
+        }
+
+        //Get the input Dom elements using the ids
+        const hours = document.getElementById("hours");
+        const minutes = document.getElementById("minutes");
+        const seconds = document.getElementById("seconds");
+
+        const startButton = document.getElementById("start-button");
+        const pauseButton = document.getElementById("pause-button");
+        const resetButton = document.getElementById("reset-button");
+
+        const displayTime = document.getElementById("display-time");
+
+        const inputGroup = document.getElementById("input-group");
+
+        //console.log(hours, minutes, seconds);
+
+        let remainingTime = null;
+        let timer = null;
+
+
+        startButton.addEventListener("click", () => {
+            const hoursValue = parseInt(hours.value) || "0";
+            const minutesValue = parseInt(minutes.value) || "0";
+            const secondsValue = parseInt(seconds.value) || "0";
+
+            //console.log(hoursValue, minutesValue, secondsValue);
+            inputGroup.classList.add('hidden');
+            startButton.classList.add('hidden');
+
+            pauseButton.classList.remove('hidden');
+            resetButton.classList.remove('hidden');
+            displayTime.classList.remove('hidden');
+
+            // remaining time will be previous time if paused before or time from inputs
+
+            remainingTime = remainingTime ||
+                Math.floor(hoursValue * 60 * 60) +
+                Math.floor(minutesValue * 60) +
+                Math.floor(secondsValue);
+
+            displayTime.innerHTML = getTimeText(remainingTime);
+
+            timer = setInterval(() => {
+                remainingTime--;
+
+                if (remainingTime < 0) {
+                    alert("Time is up");
+                    clearInterval(timer);
+                    return;
+                }
+
+                displayTime.innerHTML = getTimeText(remainingTime);
+            }, 1000);
+        });
+
+        pauseButton.addEventListener("click", () => {
+            startButton.classList.remove("hidden");
+            pauseButton.classList.add("hidden");
+            clearInterval(timer);
+        });
+
+        resetButton.addEventListener("click", () => {
+            clearInterval(timer);
+
+            hours.value = null;
+            minutes.value = null;
+            seconds.value = null;
+            remainingTime = null;
+
+            displayTime.classList.add("hidden");
+            startButton.classList.remove("hidden");
+            pauseButton.classList.add("hidden");
+            resetButton.classList.add("hidden");
+            inputGroup.classList.remove("hidden");
+
+        });
+    </script>
+</body>
+
+</html>

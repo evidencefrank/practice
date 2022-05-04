@@ -1,0 +1,148 @@
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Modal Overlay</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        
+        main {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            /* so that it doesn't move beyond scrolling*/
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: #ffffff;
+            padding: 25px;
+            min-width: 250px;
+            max-width: 400px;
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .close-modal-btn {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: transparent;
+            border: none;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main>
+        <div class="content">
+            <button type="button" data-model-id="modal" id="modal-trigger">Show Offer</button>
+            <p class="modal-accept hidden">Offer Accepted</p>
+        </div>
+        <div class="modal-overlay hidden" id="modal">
+            <div class="modal-content">
+                <button type="button" class="close-modal-btn">X</button>
+                <p class="modal-text">
+                    Click the button below to accept our amazing offer!
+                </p>
+                <button type="button" class="submit-modal-btn">Accept offer</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class Modal {
+            constructor(triggerSelector, submitCallBack) {
+                //close button element (x)
+                const closeModalBtnEl = document.querySelector('.close-modal-btn');
+
+                //Trigger button
+                const triggerButtonEl = document.querySelector(triggerSelector);
+
+                //full modal overlay
+                this.overlayEl = document.querySelector(`#${triggerButtonEl.dataset.modelId}`);
+
+                //modal content element
+                const modalContent = document.querySelector(".modal-content");
+
+                //modal content element
+                const submitModalBtn = this.overlayEl.querySelector(".submit-modal-btn");
+
+                //submitCallback
+                this.submitCallBack = submitCallBack;
+
+                //Add Event Listeners
+                closeModalBtnEl.addEventListener('click', this.closeModal);
+                triggerButtonEl.addEventListener('click', this.openModal);
+                this.overlayEl.addEventListener('click', this.closeModal);
+                modalContent.addEventListener('click', this.handleContentClick);
+                submitModalBtn.addEventListener('click', this.handleSubmit);
+            }
+
+            handleSubmit = () => {
+                this.closeModal();
+                this.submitCallBack();
+            }
+
+            handleContentClick = (e) => {
+                e.stopPropagation();
+            }
+
+            openModal = () => {
+                this.toggleVisibility(true);
+            }
+
+            closeModal = () => {
+                this.toggleVisibility(false);
+            }
+
+            toggleVisibility = (isVisible) => {
+                this.overlayEl.classList.toggle('hidden', !isVisible);
+            }
+        }
+
+        const submitCallback = () => {
+            const triggerButtonEl = document.querySelector('#modal-trigger');
+            const modalAcceptEl = document.querySelector('.modal-accept');
+
+            triggerButtonEl.classList.add('hidden');
+            modalAcceptEl.classList.remove('hidden');
+        }
+
+        const modal = new Modal('#modal-trigger', submitCallback);
+    </script>
+</body>
+
+</html>
+
+<!--
+    1. creating a layout of the modal - done
+    2. styling of the modal - done
+    3. close functionality of the modal
+    4. layout of the show offer with css
+    5.javascript aspect of open and closing a modal
+    6. render the success page
+-->
